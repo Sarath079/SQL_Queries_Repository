@@ -1,2 +1,2 @@
 # SQL-practice
-This repository contains several notebooks which consists of many SQL queries. These queries executed by using databases called "AdventureWorks2019", "AP", "Examples", "ProductOrders", "Salesdb", "travel" downloaded as a part of "Database management system" course work. Queries are written to get answers for questions given in the notebooks as comments.
+Welcome to the SQL Queries Repository! This repository contains folders with numerous files, each housing several queries. These queries are designed and executed in various environments including Azure Data Studio, BigQuery on Google Cloud Platform.
