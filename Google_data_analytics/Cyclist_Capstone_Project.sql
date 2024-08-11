@@ -17,17 +17,29 @@ count(*)-count(member_casual) as member_casual
 FROM `project2-418501.cyclistic_2023.nov_2023` 
 
 --To find start_station_name
---output gives that start_station_name = 'Rush St & Hubbard St'with lat = 41.89 and longitude -87.625703 is missing in multiple rows(6449)
---update the table with the start_station_name
+--output gives that "There is no data to display."
+--As we cannot be able to fill the null values, we should find different way to handle nulls.
   
 SELECT n.start_station_name, n.start_lat, n.start_lng
 FROM `project2-418501.cyclistic_2023.nov_2023` n
-join (select start_lat from `project2-418501.cyclistic_2023.nov_2023` n1 where n1.start_station_name is null) n2
-on n.start_lat=n2.start_lat
+join 
+  (select start_lat from `project2-418501.cyclistic_2023.nov_2023` n1 where n1.start_station_name is null) n2
+  on n.start_lat=n2.start_lat
+  and n.start_lng=n2.start_lng
 where start_station_name is not null 
 
+--Incase of having data to update the null values
 --updating the table with start station name
   
-update `project2-418501.cyclistic_2023.nov_2023` n
-set start_station_name = 'Rush St & Hubbard St'
-where n.start_lat = 41.89 and start_lng = -87.625703*/
+update `project2-418501.cyclistic_2023.jan_2023` n
+set n.start_station_name = n2.start_station_name
+from 
+  (SELECT distinct n.ride_id, n.start_station_name, n.start_lat, n.start_lng
+  FROM `project2-418501.cyclistic_2023.jan_2023` n
+  inner join (select start_lat,start_lng from `project2-418501.cyclistic_2023.jan_2023` n1 where n1.start_station_name is null) n2
+    on n.start_lat=n2.start_lat
+    and n.start_lng=n2.start_lng
+  where start_station_name is not null) n2
+where n.start_lat=n2.start_lat and n.start_lng = n2.start_lng and n.ride_id = n2.ride_id
+
+--after successfully updating some null values, will remove the null values.
