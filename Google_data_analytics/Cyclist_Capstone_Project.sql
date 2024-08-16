@@ -16,18 +16,6 @@ count(*)-count(end_lng) as end_lng,
 count(*)-count(member_casual) as member_casual
 FROM `project2-418501.cyclistic_2023.nov_2023` 
 
---To find start_station_name
---output gives that "There is no data to display."
---As we cannot be able to fill the null values, we should find different way to handle nulls.
-  
-SELECT n.start_station_name, n.start_lat, n.start_lng
-FROM `project2-418501.cyclistic_2023.nov_2023` n
-join 
-  (select start_lat from `project2-418501.cyclistic_2023.nov_2023` n1 where n1.start_station_name is null) n2
-  on n.start_lat=n2.start_lat
-  and n.start_lng=n2.start_lng
-where start_station_name is not null 
-
 --Incase of having data to update the null values
 --updating the table with start station name
   
@@ -43,3 +31,25 @@ from
 where n.start_lat=n2.start_lat and n.start_lng = n2.start_lng and n.ride_id = n2.ride_id
 
 --after successfully updating some null values, will remove the null values.
+  
+delete from project2-418501.cyclistic_2023.jan_2023
+where start_station_name is null
+or start_station_id is null
+or end_station_name is null
+or end_station_id is null
+or end_lat is null
+or end_lng is null
+
+--To check the data integrity
+  --checking ride_id column
+  select ride_id
+  from project2-418501.cyclistic_2023.jan_2023
+  where length(ride_id)<>16
+  --checking rideable_type column
+  select rideable_type
+  from project2-418501.cyclistic_2023.jan_2023
+  where rideable_type <> 'electric_bike' 
+  and rideable_type <>'classic_bike'
+  and rideable_type <> 'docked_bike';
+  --
+
