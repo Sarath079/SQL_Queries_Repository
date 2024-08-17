@@ -51,5 +51,18 @@ or end_lng is null
   where rideable_type <> 'electric_bike' 
   and rideable_type <>'classic_bike'
   and rideable_type <> 'docked_bike';
-  --
-
+  --To check the consistency of the timestamp
+  --checking the year
+  SELECT started_at FROM `project2-418501.cyclistic_2023.jan_2023` 
+  where extract(year from started_at) <> 2023
+  --checking the day
+  SELECT extract(day from started_at) FROM `project2-418501.cyclistic_2023.jan_2023` 
+  where extract(day from started_at) >31 
+  or extract(day from started_at) <1
+  --checking months
+  SELECT extract(month from started_at) FROM `project2-418501.cyclistic_2023.jan_2023` 
+  where extract(month from started_at) >12
+  or extract(month from started_at)<1
+  --checking the member_casual column
+  SELECT member_casual FROM `project2-418501.cyclistic_2023.jan_2023` 
+  where member_casual <> 'member' and member_casual <> 'casual'
