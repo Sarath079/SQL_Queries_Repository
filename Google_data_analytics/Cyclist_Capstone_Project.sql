@@ -66,3 +66,20 @@ or end_lng is null
   --checking the member_casual column
   SELECT member_casual FROM `project2-418501.cyclistic_2023.jan_2023` 
   where member_casual <> 'member' and member_casual <> 'casual'
+
+--Adding new columns that would be helpful in analysis
+--Duration may exceed 24 hours, so data type of the column should be string
+
+Alter table `project2-418501.cyclistic_2023.jan_2023`
+add column duration string
+
+--duration of the ride can be caluculated by subtracting ended_at column and started_at column
+    
+UPDATE project2-418501.cyclistic_2023.jan_2023
+SET duration = CONCAT(
+  LPAD(CAST(EXTRACT(HOUR FROM (ended_at-started_at)) AS STRING), 2, '0'), ':',
+  LPAD(CAST(EXTRACT(MINUTE FROM (ended_at-started_at)) AS STRING), 2, '0'), ':',
+  LPAD(CAST(EXTRACT(SECOND FROM (ended_at-started_at)) AS STRING), 2, '0')
+)
+WHERE true;
+
