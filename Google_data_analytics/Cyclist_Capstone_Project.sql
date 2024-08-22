@@ -83,3 +83,13 @@ SET duration = CONCAT(
 )
 WHERE true;
 
+--adding column to know the day of the week, ride was started.
+Alter table `project2-418501.cyclistic_2023.jan_2023`
+add column day_of_week int64
+
+--Updating the column with values 1 to 7, where 1 is sunday and 7 is saturday
+UPDATE project2-418501.cyclistic_2023.jan_2023
+SET day_of_week = EXTRACT(dayofweek FROM started_at)
+where true;
+
+
