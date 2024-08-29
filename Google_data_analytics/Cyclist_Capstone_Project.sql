@@ -83,6 +83,25 @@ SET duration = CONCAT(
 )
 WHERE true;
 
+--We didn't get the duration with right data type, "Interval" is the appropriate data type for the column
+--so add new column with interval data type and drop the old one. we did a mistake and fixed it.
+
+ALTER TABLE project2-418501.cyclistic_2023.jan_2023 
+ADD COLUMN ride_length INTERVAL --adding column with correct data type
+
+--now update the new column with values
+UPDATE project2-418501.cyclistic_2023.feb_2023
+SET ride_length = INTERVAL 
+                  CAST(SPLIT(Duration, ':')[OFFSET(0)] AS INT64) HOUR +
+                  INTERVAL CAST(SPLIT(Duration, ':')[OFFSET(1)] AS INT64) MINUTE +
+                  INTERVAL CAST(SPLIT(Duration, ':')[OFFSET(2)] AS INT64) SECOND
+where true                  
+
+--finally droping the old column
+
+ALTER TABLE project2-418501.cyclistic_2023.jan_2023
+DROP COLUMN duration
+
 --adding column to know the day of the week, ride was started.
 Alter table `project2-418501.cyclistic_2023.jan_2023`
 add column day_of_week int64
