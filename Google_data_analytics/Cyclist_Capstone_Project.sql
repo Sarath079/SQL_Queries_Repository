@@ -18,7 +18,6 @@ FROM `project2-418501.cyclistic_2023.nov_2023`
 
 --Incase of having data to update the null values
 --updating the table with start station name
-  
 update `project2-418501.cyclistic_2023.jan_2023` n
 set n.start_station_name = n2.start_station_name
 from 
@@ -31,7 +30,6 @@ from
 where n.start_lat=n2.start_lat and n.start_lng = n2.start_lng and n.ride_id = n2.ride_id
 
 --after successfully updating some null values, will remove the null values.
-  
 delete from project2-418501.cyclistic_2023.jan_2023
 where start_station_name is null
 or start_station_id is null
@@ -69,12 +67,10 @@ or end_lng is null
 
 --Adding new columns that would be helpful in analysis
 --Duration may exceed 24 hours, so data type of the column should be string
-
 Alter table `project2-418501.cyclistic_2023.jan_2023`
 add column duration string
 
 --duration of the ride can be caluculated by subtracting ended_at column and started_at column
-    
 UPDATE project2-418501.cyclistic_2023.jan_2023
 SET duration = CONCAT(
   LPAD(CAST(EXTRACT(HOUR FROM (ended_at-started_at)) AS STRING), 2, '0'), ':',
@@ -85,7 +81,6 @@ WHERE true;
 
 --We didn't get the duration with right data type, "Interval" is the appropriate data type for the column
 --so add new column with interval data type and drop the old one. we did a mistake and fixed it.
-
 ALTER TABLE project2-418501.cyclistic_2023.jan_2023 
 ADD COLUMN ride_length INTERVAL --adding column with correct data type
 
@@ -98,9 +93,22 @@ SET ride_length = INTERVAL
 where true                  
 
 --finally droping the old column
-
 ALTER TABLE project2-418501.cyclistic_2023.jan_2023
 DROP COLUMN duration
+
+--To add the ride_length column directly, without having them as a string and converting into interval
+--add the column to the table first.
+ALTER TABLE project2-418501.cyclistic_2023.mar_2023 --jan and feb were altered before, hence we are using march month
+ADD COLUMN ride_length INTERVAL
+
+--updating values into the interval column
+UPDATE project2-418501.cyclistic_2023.mar_2023
+SET ride_length = INTERVAL 
+                  cast(timestamp_diff(ended_at,started_at, hour) as int64) hour +
+                  interval cast(mod(timestamp_diff(ended_at,started_at, minute),60) as int64) minute +
+                  interval cast(mod(timestamp_diff(ended_at,started_at, second),60) as int64) second
+
+where true;       
 
 --adding column to know the day of the week, ride was started.
 Alter table `project2-418501.cyclistic_2023.jan_2023`
@@ -111,4 +119,23 @@ UPDATE project2-418501.cyclistic_2023.jan_2023
 SET day_of_week = EXTRACT(dayofweek FROM started_at)
 where true;
 
+
+--Analyzing the data
+--To find count of the rides by member and casual riders on each day of the week(1-sunday and 7-saturday)
+SELECT  member_casual,day_of_week,count(ride_id) 
+FROM `project2-418501.cyclistic_2023.jan_2023`
+group by day_of_week,member_casual
+order by day_of_week
+
+--To find total number of hours by members and casual riders
+SELECT  member_casual, sum(ride_length) as sum
+from project2-418501.cyclistic_2023.jan_2023
+group by member_casual
+order by sum
+
+--Average of ride_length by members and casual riders
+SELECT  member_casual, avg(ride_length) as avg
+from project2-418501.cyclistic_2023.jan_2023
+group by member_casual
+order by avg
 
