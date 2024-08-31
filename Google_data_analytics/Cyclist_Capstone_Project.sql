@@ -127,6 +127,12 @@ FROM `project2-418501.cyclistic_2023.jan_2023`
 group by day_of_week,member_casual
 order by day_of_week
 
+--Total number of hours rode by members and casual riders on weekdays and weekends.
+SELECT  member_casual,day_of_week, extract(hour from sum(ride_length)) 
+FROM `project2-418501.cyclistic_2023.jan_2023`
+group by day_of_week,member_casual
+order by day_of_week
+
 --To find total number of hours by members and casual riders
 SELECT  member_casual, sum(ride_length) as sum
 from project2-418501.cyclistic_2023.jan_2023
@@ -138,4 +144,6 @@ SELECT  member_casual, avg(ride_length) as avg
 from project2-418501.cyclistic_2023.jan_2023
 group by member_casual
 order by avg
+
+
 
