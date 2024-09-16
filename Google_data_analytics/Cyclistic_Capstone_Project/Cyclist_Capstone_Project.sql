@@ -145,5 +145,13 @@ from project2-418501.cyclistic_2023.jan_2023
 group by member_casual
 order by avg
 
+--To find popular stations for both member and casual riders by changing value in having clause.
+SELECT member_casual,start_station_name,count(ride_id) num_of_rides
+FROM `project2-418501.cyclistic_2023.jan_2023`
+group by start_station_name, member_casual
+having member_casual = 'casual'
+order by num_of_rides desc
+limit 10
+
 
 
